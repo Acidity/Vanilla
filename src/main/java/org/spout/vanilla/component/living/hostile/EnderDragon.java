@@ -46,8 +46,8 @@ public class EnderDragon extends VanillaEntity implements Hostile {
 	@Override
 	public void onAttached() {
 		super.onAttached();
-		getHolder().getNetwork().setEntityProtocol(VanillaPlugin.VANILLA_PROTOCOL_ID, new EnderDragonEntityProtocol());
-		VanillaPhysicsComponent physics = getHolder().add(VanillaPhysicsComponent.class);
+		getOwner().getNetwork().setEntityProtocol(VanillaPlugin.VANILLA_PROTOCOL_ID, new EnderDragonEntityProtocol());
+		VanillaPhysicsComponent physics = getOwner().add(VanillaPhysicsComponent.class);
 		physics.setCollisionShape(new BoxShape(MathHelper.toVector3f(10f, 5f, 10f)));
 		physics.setMass(50f);
 		Vector3f inertia = new Vector3f();

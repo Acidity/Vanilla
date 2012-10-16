@@ -44,8 +44,8 @@ import org.spout.vanilla.protocol.entity.object.ItemEntityProtocol;
 public class Item extends VanillaEntity {
 	@Override
 	public void onAttached() {
-		getHolder().getNetwork().setEntityProtocol(VanillaPlugin.VANILLA_PROTOCOL_ID, new ItemEntityProtocol());
-		VanillaPhysicsComponent physics = getHolder().add(VanillaPhysicsComponent.class);
+		getOwner().getNetwork().setEntityProtocol(VanillaPlugin.VANILLA_PROTOCOL_ID, new ItemEntityProtocol());
+		VanillaPhysicsComponent physics = getOwner().add(VanillaPhysicsComponent.class);
 		physics.setCollisionShape(new BoxShape(MathHelper.toVector3f(0.1f, 0.1f, 0.1f)));
 		physics.setMass(0.1f);
 		Vector3f inertia = new Vector3f();

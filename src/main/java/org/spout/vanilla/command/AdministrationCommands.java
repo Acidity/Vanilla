@@ -44,14 +44,13 @@ import org.spout.api.inventory.ItemStack;
 import org.spout.api.material.Material;
 
 import org.spout.vanilla.VanillaPlugin;
-import org.spout.vanilla.component.inventory.PlayerInventory;
 import org.spout.vanilla.component.living.Human;
 import org.spout.vanilla.component.misc.HealthComponent;
 import org.spout.vanilla.component.world.VanillaSky;
 import org.spout.vanilla.configuration.OpConfiguration;
 import org.spout.vanilla.configuration.VanillaConfiguration;
 import org.spout.vanilla.data.GameMode;
-import org.spout.vanilla.data.Times;
+import org.spout.vanilla.data.Time;
 import org.spout.vanilla.data.Weather;
 import org.spout.vanilla.material.VanillaMaterials;
 
@@ -60,6 +59,23 @@ public class AdministrationCommands {
 
 	public AdministrationCommands(VanillaPlugin plugin) {
 		this.plugin = plugin;
+	}
+
+	@Command(aliases = "clear", usage = "[player]", desc = "Clears your inventory", min = 0, max = 1)
+	@CommandPermissions("vanilla.command.clear")
+	public void clear(CommandContext args, CommandSource source) throws CommandException {
+		if (args.length() == 0) {
+			if (!(source instanceof Player)) {
+				throw new CommandException("You must be a player to clear your own inventory.");
+			}
+			((Player) source).add(Human.class).getInventory().clear();
+		}
+		if (args.length() == 1) {
+			Player player = args.getPlayer(0, false);
+			player.add(Human.class).getInventory().clear();
+			player.sendMessage(ChatStyle.BRIGHT_GREEN, "Your inventory has been cleared.");
+		}
+		source.sendMessage(ChatStyle.BRIGHT_GREEN, "Inventory cleared.");
 	}
 
 	@Command(aliases = {"tp", "teleport"}, usage = "[player] [player|x] [y] [z] [-w <world>]", flags = "w:", desc = "Teleport to a location", min = 1, max = 4)
@@ -168,13 +184,7 @@ public class AdministrationCommands {
 		}
 
 		int count = args.getInteger(++index, 1);
-
-		PlayerInventory inventory = player.add(Human.class).getInventory();
-		ItemStack item = new ItemStack(material, count);
-		inventory.getQuickbar().add(item);
-		if (!item.isEmpty()) {
-			inventory.getMain().add(item);
-		}
+		player.add(Human.class).getInventory().add(new ItemStack(material, count));
 		source.sendMessage("Gave ", player.getName(), " ", count, " ", material.getDisplayName());
 	}
 
@@ -215,14 +225,14 @@ public class AdministrationCommands {
 	@Command(aliases = {"time"}, usage = "<add|set> <0-24000|day|night|dawn|dusk> [world]", desc = "Set the time of the server", min = 2, max = 3)
 	@CommandPermissions("vanilla.command.time")
 	public void time(CommandContext args, CommandSource source) throws CommandException {
-		int time = 0;
+		long time = 0;
 		boolean relative = false;
 		if (args.getString(0).equalsIgnoreCase("set")) {
 			if (args.isInteger(1)) {
 				time = args.getInteger(1);
 			} else {
 				try {
-					time = Times.get(args.getString(1)).getTime();
+					time = Time.get(args.getString(1)).getTime();
 				} catch (Exception e) {
 					throw new CommandException("'" + args.getString(1) + "' is not a valid time.");
 				}

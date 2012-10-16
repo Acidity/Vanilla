@@ -27,6 +27,7 @@
 package org.spout.vanilla.component.living;
 
 import org.spout.api.Spout;
+import org.spout.api.component.components.DatatableComponent;
 import org.spout.api.data.Data;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
@@ -56,50 +57,60 @@ public class Human extends VanillaEntity {
 	@Override
 	public void onAttached() {
 		super.onAttached();
-		Entity holder = getHolder();
+		Entity holder = getOwner();
 		holder.add(PickupItemComponent.class);
 		holder.add(DiggingComponent.class);
 		holder.getNetwork().setEntityProtocol(VanillaPlugin.VANILLA_PROTOCOL_ID, new HumanEntityProtocol());
+		DatatableComponent data = getData();
+		data.put(VanillaData.PLAYER_INVENTORY, new PlayerInventory());
+		//if (data.get(VanillaData.PLAYER_INVENTORY) == null) {
+			//System.out.println("Creating new inventory");
+			//data.put(VanillaData.PLAYER_INVENTORY, new PlayerInventory());
+		//}
+		//Add height offset if loading from disk
+		if (getAttachedCount() > 1 && holder instanceof Player) {
+			((Player)holder).teleport(holder.getTransform().getPosition().add(0, 1.85F, 0));
+		}
 	}
 
 	public boolean isOnGround() {
-		return getHolder().getData().get(VanillaData.IS_ON_GROUND);
+		return getOwner().getData().get(VanillaData.IS_ON_GROUND);
 	}
 
 	public void setOnGround(boolean onGround) {
-		getHolder().getData().put(VanillaData.IS_ON_GROUND, onGround);
+		getOwner().getData().put(VanillaData.IS_ON_GROUND, onGround);
 	}
 
 	public boolean isFlying() {
-		return getHolder().getData().get(VanillaData.IS_FLYING);
+		return getOwner().getData().get(VanillaData.IS_FLYING);
 	}
 
 	public void setFlying(boolean isFlying) {
-		getHolder().getData().put(VanillaData.IS_FLYING, isFlying);
+		getOwner().getData().put(VanillaData.IS_FLYING, isFlying);
 	}
 
 	public boolean isSprinting() {
-		return getHolder().getData().get(VanillaData.IS_SPRINTING);
+		return getOwner().getData().get(VanillaData.IS_SPRINTING);
 	}
 
 	public void setSprinting(boolean isSprinting) {
-		getHolder().getData().put(VanillaData.IS_SPRINTING, isSprinting);
+		getOwner().getData().put(VanillaData.IS_SPRINTING, isSprinting);
 	}
 
 	public boolean isFalling() {
-		return getHolder().getData().get(VanillaData.IS_FALLING);
+		return getOwner().getData().get(VanillaData.IS_FALLING);
 	}
 
 	public void setFalling(boolean isFalling) {
-		getHolder().getData().put(VanillaData.IS_FALLING, isFalling);
+		getOwner().getData().put(VanillaData.IS_FALLING, isFalling);
 	}
 
 	public boolean isJumping() {
-		return getHolder().getData().get(VanillaData.IS_JUMPING);
+		return getOwner().getData().get(VanillaData.IS_JUMPING);
 	}
 
 	public void setJumping(boolean isJumping) {
-		getHolder().getData().put(VanillaData.IS_JUMPING, isJumping);
+		getOwner().getData().put(VanillaData.IS_JUMPING, isJumping);
 	}
 
 	public boolean isAdventure() {
@@ -127,14 +138,14 @@ public class Human extends VanillaEntity {
 	}
 
 	public boolean isOp() {
-		return getHolder() instanceof Player && VanillaConfiguration.OPS.isOp(getName());
+		return getOwner() instanceof Player && VanillaConfiguration.OPS.isOp(getName());
 	}
 
 	public void setGamemode(GameMode mode, boolean updateClient) {
-		Entity holder = getHolder();
+		Entity holder = getOwner();
 		if (holder instanceof Player) {
 			if (PlayerGameModeChangedEvent.getHandlerList().getRegisteredListeners().length > 0) {
-				PlayerGameModeChangedEvent event = Spout.getEventManager().callEvent(new PlayerGameModeChangedEvent((Player) getHolder(), mode));
+				PlayerGameModeChangedEvent event = Spout.getEventManager().callEvent(new PlayerGameModeChangedEvent((Player) getOwner(), mode));
 				if (event.isCancelled()) {
 					return;
 				}
@@ -153,7 +164,7 @@ public class Human extends VanillaEntity {
 				break;
 		}
 		if (holder instanceof Player && updateClient) {
-			holder.getNetwork().callProtocolEvent(new PlayerGameStateEvent((Player) holder, PlayerGameStateMessage.CHANGE_GAME_MODE, mode), (Player) getHolder());
+			holder.getNetwork().callProtocolEvent(new PlayerGameStateEvent((Player) holder, PlayerGameStateMessage.CHANGE_GAME_MODE, mode), (Player) getOwner());
 		}
 		getData().put(VanillaData.GAMEMODE, mode);
 	}
@@ -163,7 +174,7 @@ public class Human extends VanillaEntity {
 	}
 
 	public PlayerInventory getInventory() {
-		return getData().get(VanillaData.INVENTORY);
+		return getData().get(VanillaData.PLAYER_INVENTORY);
 	}
 
 	/**
@@ -171,7 +182,7 @@ public class Human extends VanillaEntity {
 	 * @param item to drop
 	 */
 	public void dropItem(ItemStack item) {
-		ItemUtil.dropItemNaturally(this.getHolder().getTransform().getPosition(), item);
+		ItemUtil.dropItemNaturally(this.getOwner().getTransform().getPosition(), item);
 	}
 
 	/**

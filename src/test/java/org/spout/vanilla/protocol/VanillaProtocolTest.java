@@ -36,6 +36,7 @@ import org.spout.api.math.Vector3;
 import org.spout.api.protocol.Message;
 import org.spout.api.util.Parameter;
 
+import org.spout.vanilla.data.Animation;
 import org.spout.vanilla.data.GameMode;
 import org.spout.vanilla.inventory.window.WindowType;
 import org.spout.vanilla.material.VanillaMaterials;
@@ -65,9 +66,9 @@ import org.spout.vanilla.protocol.msg.entity.pos.EntityYawMessage;
 import org.spout.vanilla.protocol.msg.entity.spawn.EntityExperienceOrbMessage;
 import org.spout.vanilla.protocol.msg.entity.spawn.EntityItemMessage;
 import org.spout.vanilla.protocol.msg.entity.spawn.EntityMobMessage;
+import org.spout.vanilla.protocol.msg.entity.spawn.EntityObjectMessage;
 import org.spout.vanilla.protocol.msg.entity.spawn.EntityPaintingMessage;
 import org.spout.vanilla.protocol.msg.entity.spawn.EntityThunderboltMessage;
-import org.spout.vanilla.protocol.msg.entity.spawn.EntityVehicleMessage;
 import org.spout.vanilla.protocol.msg.player.PlayerAbilityMessage;
 import org.spout.vanilla.protocol.msg.player.PlayerBedMessage;
 import org.spout.vanilla.protocol.msg.player.PlayerBlockPlacementMessage;
@@ -146,12 +147,12 @@ public class VanillaProtocolTest extends BaseProtocolTest {
 			new PlayerLocaleViewDistanceMessage("en_GB", PlayerLocaleViewDistanceMessage.VIEW_NORMAL, (byte) 0, (byte) 0),
 			new PlayerTabCompleteMessage("behindcursor"),
 			new PlayerBedMessage(0, 3, 42, 42, 42),
-			new EntityAnimationMessage(1234, EntityAnimationMessage.ANIMATION_HURT),
+			new EntityAnimationMessage(1234, (byte) Animation.DAMAGE_ANIMATION.getId()),
 			new EntityActionMessage(5, 2),
 			new PlayerSpawnMessage(24, "risaccess1", 8000, 28, 900, 0, 0, 89, new ArrayList<Parameter<?>>()),
 			new EntityItemMessage(1234, 89, 3, (short) 4, 1, 2, 3, 34, 56, 55),
 			new PlayerCollectItemMessage(1234, 5678),
-			new EntityVehicleMessage(1, 3, 3.0, 654.0, 1234.0, 77, 0.54, 0.23, 0.7),
+			new EntityObjectMessage(1, (byte) 1, 200, 175, 132, 50, (short) 62, (short) 56, (short) 78),
 			new EntityMobMessage(123, 255, 1, 2, 4, 34, 55, 33, (short) 0, (short) 0, (short) 0, TEST_PARAMS),
 			new EntityPaintingMessage(4, "KEBAB", 2, 3, 4, 56),
 			new EntityExperienceOrbMessage(34, 1, 2, 3, (short) 34),

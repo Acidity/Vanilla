@@ -27,6 +27,7 @@
 package org.spout.vanilla.protocol;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -36,12 +37,14 @@ import gnu.trove.set.TIntSet;
 import org.spout.api.Server;
 import org.spout.api.Spout;
 import org.spout.api.entity.Entity;
+import org.spout.api.event.Event;
 import org.spout.api.event.EventHandler;
 import org.spout.api.generator.biome.Biome;
 import org.spout.api.geo.World;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.api.geo.cuboid.Chunk;
 import org.spout.api.geo.cuboid.ChunkSnapshot;
+import org.spout.api.geo.cuboid.ChunkSnapshot.BlockComponentSnapshot;
 import org.spout.api.geo.cuboid.ChunkSnapshot.EntityType;
 import org.spout.api.geo.cuboid.ChunkSnapshot.ExtraData;
 import org.spout.api.geo.cuboid.ChunkSnapshot.SnapshotType;
@@ -54,6 +57,7 @@ import org.spout.api.protocol.Message;
 import org.spout.api.protocol.NetworkSynchronizer;
 import org.spout.api.protocol.Session;
 import org.spout.api.protocol.Session.State;
+import org.spout.api.protocol.event.ProtocolEvent;
 import org.spout.api.protocol.event.ProtocolEventListener;
 import org.spout.api.util.hashing.IntPairHashed;
 import org.spout.api.util.map.concurrent.TSyncIntPairObjectHashMap;
@@ -63,6 +67,7 @@ import org.spout.api.util.set.concurrent.TSyncIntPairHashSet;
 import org.spout.vanilla.VanillaPlugin;
 import org.spout.vanilla.component.inventory.window.DefaultWindow;
 import org.spout.vanilla.component.living.Human;
+import org.spout.vanilla.component.substance.material.Sign;
 import org.spout.vanilla.configuration.VanillaConfiguration;
 import org.spout.vanilla.data.Difficulty;
 import org.spout.vanilla.data.Dimension;
@@ -75,8 +80,10 @@ import org.spout.vanilla.event.block.BlockControllerDataEvent;
 import org.spout.vanilla.event.block.SignUpdateEvent;
 import org.spout.vanilla.event.entity.EntityAnimationEvent;
 import org.spout.vanilla.event.entity.EntityCollectItemEvent;
+import org.spout.vanilla.event.entity.EntityEquipmentEvent;
 import org.spout.vanilla.event.entity.EntityMetaChangeEvent;
 import org.spout.vanilla.event.entity.EntityStatusEvent;
+import org.spout.vanilla.event.player.network.PlayerBedEvent;
 import org.spout.vanilla.event.player.network.PlayerGameStateEvent;
 import org.spout.vanilla.event.player.network.PlayerHealthEvent;
 import org.spout.vanilla.event.player.network.PlayerListEvent;
@@ -98,6 +105,7 @@ import org.spout.vanilla.protocol.msg.entity.EntityMetadataMessage;
 import org.spout.vanilla.protocol.msg.entity.EntityStatusMessage;
 import org.spout.vanilla.protocol.msg.entity.EntityTileDataMessage;
 import org.spout.vanilla.protocol.msg.entity.pos.EntityTeleportMessage;
+import org.spout.vanilla.protocol.msg.player.PlayerBedMessage;
 import org.spout.vanilla.protocol.msg.player.PlayerCollectItemMessage;
 import org.spout.vanilla.protocol.msg.player.PlayerGameStateMessage;
 import org.spout.vanilla.protocol.msg.player.PlayerHealthMessage;
@@ -265,6 +273,8 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 		initChunk(c.getBase());
 
 		Collection<Chunk> chunks = null;
+		
+		List<ProtocolEvent> events = new ArrayList<ProtocolEvent>();
 
 		if (activeChunks.add(x, z)) {
 			Point p = c.getBase();
@@ -275,7 +285,7 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 
 			for (int cube = 0; cube < 16; cube++) {
 				Point pp = new Point(c.getWorld(), x << Chunk.BLOCKS.BITS, cube << Chunk.BLOCKS.BITS, z << Chunk.BLOCKS.BITS);
-				packetChunkData[cube] = chunkInit.getChunkData(heights, materials, pp);
+				packetChunkData[cube] = chunkInit.getChunkData(heights, materials, pp, events);
 			}
 
 			Chunk chunk = p.getWorld().getChunkFromBlock(p);
@@ -297,12 +307,16 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 
 		if (chunks == null || !chunks.contains(c)) {
 
-			byte[] fullChunkData = ChunkInit.getChunkFullData(c);
+			byte[] fullChunkData = ChunkInit.getChunkFullData(c, events);
 
 			byte[][] packetChunkData = new byte[16][];
 			packetChunkData[y] = fullChunkData;
 			ChunkDataMessage CCMsg = new ChunkDataMessage(x, z, false, new boolean[16], packetChunkData, null, player.getSession());
 			player.getSession().send(false, CCMsg);
+		}
+		
+		for (ProtocolEvent e : events) {
+			this.callProtocolEvent(e);
 		}
 
 		return chunks;
@@ -402,11 +416,16 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 	}
 
 	@EventHandler
+	public Message onEntityEquipment(EntityEquipmentEvent event) {
+		return new EntityEquipmentMessage(event.getEntity().getId(), event.getSlot(), event.getItem());
+	}
+
+	@EventHandler
 	public Message onWindowOpen(WindowOpenEvent event) {
 		if (event.getWindow() instanceof DefaultWindow) {
 			return null; // no message for the default Window
 		}
-		int size = event.getWindow().getInventorySize() - event.getWindow().getHolder().get(Human.class).getInventory().getMain().size();
+		int size = event.getWindow().getInventorySize() - event.getWindow().getOwner().get(Human.class).getInventory().getMain().size();
 		return new WindowOpenMessage(event.getWindow(), size);
 	}
 
@@ -476,8 +495,13 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 	}
 
 	@EventHandler
+	public Message onPlayerBed(PlayerBedEvent event) {
+		return new PlayerBedMessage(event.getPlayer(), event.getBed());
+	}
+
+	@EventHandler
 	public Message onEntityAnimation(EntityAnimationEvent event) {
-		return new EntityAnimationMessage(event.getEntity().getId(), event.getAnimation());
+		return new EntityAnimationMessage(event.getEntity().getId(), (byte) event.getAnimation().getId());
 	}
 
 	@EventHandler
@@ -498,8 +522,8 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 
 	@EventHandler
 	public Message onSignUpdate(SignUpdateEvent event) {
-		Block block = (Block) event.getSign().getPlacedBlock();
-		return new SignMessage(block.getX(), block.getY(), block.getZ(), event.getLines());
+		Sign sign = event.getSign();
+		return new SignMessage(sign.getOwner().getX(), sign.getOwner().getY(), sign.getOwner().getZ(), event.getLines());
 	}
 
 	@EventHandler
@@ -580,28 +604,28 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 			return this == CLIENT_SEL || this == FULL_COLUMN;
 		}
 
-		public byte[] getChunkData(int[][] heights, BlockMaterial[][] materials, Point p) {
+		public byte[] getChunkData(int[][] heights, BlockMaterial[][] materials, Point p, List<ProtocolEvent> updateEvents) {
 			switch (this) {
 				case CLIENT_SEL:
-					return getChunkFullColumn(heights, materials, p);
+					return getChunkFullColumn(heights, materials, p, updateEvents);
 				case FULL_COLUMN:
-					return getChunkFullColumn(heights, materials, p);
+					return getChunkFullColumn(heights, materials, p, updateEvents);
 				case HEIGHTMAP:
 					return getChunkHeightMap(heights, materials, p);
 				case EMPTY_COLUMN:
 					return getEmptyChunk(heights, materials, p);
 				default:
-					return getChunkFullColumn(heights, materials, p);
+					return getChunkFullColumn(heights, materials, p, updateEvents);
 			}
 		}
 
-		private static byte[] getChunkFullColumn(int[][] heights, BlockMaterial[][] materials, Point p) {
+		private static byte[] getChunkFullColumn(int[][] heights, BlockMaterial[][] materials, Point p, List<ProtocolEvent> updateEvents) {
 			Chunk c = p.getWorld().getChunkFromBlock(p);
-			return getChunkFullData(c);
+			return getChunkFullData(c, updateEvents);
 		}
 
-		public static byte[] getChunkFullData(Chunk c) {
-			ChunkSnapshot snapshot = c.getSnapshot(SnapshotType.BOTH, EntityType.NO_ENTITIES, ExtraData.NO_EXTRA_DATA);
+		public static byte[] getChunkFullData(Chunk c, List<ProtocolEvent> updateEvents) {
+			ChunkSnapshot snapshot = c.getSnapshot(SnapshotType.BOTH, EntityType.BLOCK_COMPONENTS, ExtraData.NO_EXTRA_DATA);
 			short[] rawBlockIdArray = snapshot.getBlockIds();
 			short[] rawBlockData = snapshot.getBlockData();
 			byte[] rawBlockLight = snapshot.getBlockLight();
@@ -620,6 +644,15 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 				fullChunkData[i + 1] = (byte) (getMinecraftId(material2) & 0xFF);
 
 				arrIndex++;
+			}
+			
+			for (BlockComponentSnapshot component : snapshot.getBlockComponents()) {
+				System.out.println("Found block component: " + component.getComponent().getName());
+				if (Sign.class.isAssignableFrom(component.getComponent())) {
+					Sign sign = (Sign)c.getBlockComponent(component.getX(), component.getY(), component.getZ());
+					updateEvents.add(new SignUpdateEvent(sign, sign.getText()));
+					System.out.println("Found sign component: " + Arrays.toString(sign.getText()));
+				}
 			}
 
 			arrIndex = rawBlockIdArray.length + (rawBlockData.length >> 1);

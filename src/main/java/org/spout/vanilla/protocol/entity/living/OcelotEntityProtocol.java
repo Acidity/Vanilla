@@ -32,9 +32,9 @@ import org.spout.api.entity.Entity;
 import org.spout.api.util.Parameter;
 
 import org.spout.vanilla.component.living.passive.Ocelot;
-import org.spout.vanilla.protocol.entity.BasicMobEntityProtocol;
+import org.spout.vanilla.protocol.entity.CreatureProtocol;
 
-public class OcelotEntityProtocol extends BasicMobEntityProtocol {
+public class OcelotEntityProtocol extends CreatureProtocol {
 	public OcelotEntityProtocol() {
 		super(98);
 	}
@@ -47,7 +47,7 @@ public class OcelotEntityProtocol extends BasicMobEntityProtocol {
 		data |= (ocelot.isSitting() ? 1 : 0) & 0x01;
 		data |= (ocelot.isTamed() ? 1 : 0) & 0x04;
 		parameters.add(new Parameter<Byte>(Parameter.TYPE_BYTE, 16, data));
-		parameters.add(new Parameter<String>(Parameter.TYPE_STRING, 17, ocelot.getOwner()));
+		parameters.add(new Parameter<String>(Parameter.TYPE_STRING, 17, ocelot.getOwnerName()));
 		parameters.add(new Parameter<Byte>(Parameter.TYPE_BYTE, 18, ocelot.getSkinId()));
 		return parameters;
 	}

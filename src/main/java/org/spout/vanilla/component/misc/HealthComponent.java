@@ -33,6 +33,7 @@ import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.event.entity.EntityHealthChangeEvent;
 
+import org.spout.vanilla.data.Animation;
 import org.spout.vanilla.data.VanillaData;
 import org.spout.vanilla.event.entity.EntityAnimationEvent;
 import org.spout.vanilla.event.entity.EntityDamageEvent;
@@ -61,17 +62,17 @@ public class HealthComponent extends EntityComponent {
 		if (isDying()) {
 			setDeathTicks(getDeathTicks() - 1);
 			if (getDeathTicks() <= 0) {
-				if (!(getHolder() instanceof Player)) {
-					getHolder().remove();
+				if (!(getOwner() instanceof Player)) {
+					getOwner().remove();
 				}
 			}
 		} else if (isDead()) {
 			if (hasDeathAnimation()) {
 				setDeathTicks(DEATH_TIME_TICKS);
-				getHolder().getNetwork().callProtocolEvent(new EntityStatusEvent(getHolder(), EntityStatusMessage.ENTITY_DEAD));
+				getOwner().getNetwork().callProtocolEvent(new EntityStatusEvent(getOwner(), EntityStatusMessage.ENTITY_DEAD));
 			} else {
-				if (!(getHolder() instanceof Player)) {
-					getHolder().remove();
+				if (!(getOwner() instanceof Player)) {
+					getOwner().remove();
 				}
 			}
 			onDeath();
@@ -140,7 +141,7 @@ public class HealthComponent extends EntityComponent {
 	 * @param source of the change
 	 */
 	public void setHealth(int health, Source source) {
-		EntityHealthChangeEvent event = new EntityHealthChangeEvent(getHolder(), source, health - getHealth());
+		EntityHealthChangeEvent event = new EntityHealthChangeEvent(getOwner(), source, health - getHealth());
 		Spout.getEngine().getEventManager().callEvent(event);
 		if (!event.isCancelled()) {
 			if (getHealth() + event.getChange() > getMaxHealth()) {
@@ -227,7 +228,7 @@ public class HealthComponent extends EntityComponent {
 	 */
 	public void damage(int amount, DamageCause cause, Entity damager, boolean sendHurtMessage) {
 		// TODO take potion effects into account
-		EntityDamageEvent event = Spout.getEngine().getEventManager().callEvent(new EntityDamageEvent(getHolder(), amount, cause, sendHurtMessage, damager));
+		EntityDamageEvent event = Spout.getEngine().getEventManager().callEvent(new EntityDamageEvent(getOwner(), amount, cause, sendHurtMessage, damager));
 		if (event.isCancelled()) {
 			return;
 		}
@@ -235,8 +236,8 @@ public class HealthComponent extends EntityComponent {
 		lastDamager = event.getDamager();
 		lastDamageCause = event.getDamageCause();
 		if (event.getSendMessage()) {
-			getHolder().getNetwork().callProtocolEvent(new EntityAnimationEvent(getHolder(), EntityAnimationMessage.ANIMATION_HURT));
-			getHolder().getNetwork().callProtocolEvent(new EntityStatusEvent(getHolder(), EntityStatusMessage.ENTITY_HURT));
+			getOwner().getNetwork().callProtocolEvent(new EntityAnimationEvent(getOwner(), Animation.DAMAGE_ANIMATION));
+			getOwner().getNetwork().callProtocolEvent(new EntityStatusEvent(getOwner(), EntityStatusMessage.ENTITY_HURT));
 			//getHurtEffect().playGlobal(getParent().getParent().getPosition());
 		}
 	}

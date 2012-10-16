@@ -27,30 +27,20 @@
 package org.spout.vanilla.component.substance.material;
 
 import org.spout.api.component.components.BlockComponent;
-import org.spout.api.material.BlockMaterial;
-
+import org.spout.api.entity.Player;
 import org.spout.vanilla.data.VanillaData;
-import org.spout.vanilla.material.block.controlled.SignPost;
+import org.spout.vanilla.event.block.SignUpdateEvent;
 
 public class Sign extends BlockComponent {
-	@Override
-	public SignPost getMaterial() {
-		return (SignPost) super.getMaterial();
-	}
-
-	@Override
-	public void setMaterial(BlockMaterial material) {
-		if (!(material instanceof SignPost)) {
-			throw new IllegalArgumentException("Material passed in must be an instance of a SignPost.");
-		}
-		super.setMaterial(material);
-	}
-
 	public String[] getText() {
 		return getData().get(VanillaData.SIGN_TEXT);
 	}
 
 	public void setText(String[] text) {
 		getData().put(VanillaData.SIGN_TEXT, text);
+		SignUpdateEvent event = new SignUpdateEvent(this, text);
+		for (Player p : this.getOwner().getChunk().getObservingPlayers()) {
+			p.getNetworkSynchronizer().callProtocolEvent(event);
+		}
 	}
 }
