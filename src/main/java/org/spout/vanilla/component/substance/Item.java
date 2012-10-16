@@ -31,22 +31,23 @@ import javax.vecmath.Vector3f;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.dynamics.RigidBody;
 
+import org.spout.api.component.components.PhysicsComponent;
 import org.spout.api.data.Data;
 import org.spout.api.inventory.ItemStack;
 import org.spout.api.math.MathHelper;
 
 import org.spout.vanilla.VanillaPlugin;
 import org.spout.vanilla.component.living.VanillaEntity;
-import org.spout.vanilla.component.misc.VanillaPhysicsComponent;
 import org.spout.vanilla.data.VanillaData;
 import org.spout.vanilla.protocol.entity.object.ItemEntityProtocol;
+import org.spout.vanilla.util.VelocityUtil;
 
 public class Item extends VanillaEntity {
 	@Override
 	public void onAttached() {
 		getOwner().getNetwork().setEntityProtocol(VanillaPlugin.VANILLA_PROTOCOL_ID, new ItemEntityProtocol());
-		VanillaPhysicsComponent physics = getOwner().add(VanillaPhysicsComponent.class);
-		physics.setCollisionShape(new BoxShape(MathHelper.toVector3f(0.1f, 0.1f, 0.1f)));
+		PhysicsComponent physics = getOwner().add(PhysicsComponent.class);
+		physics.setCollisionShape(new BoxShape(0.1f, 0.1f, 0.1f));
 		physics.setMass(0.1f);
 		Vector3f inertia = new Vector3f();
 		physics.getCollisionShape().calculateLocalInertia(physics.getMass(), inertia);

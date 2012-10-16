@@ -26,6 +26,9 @@
  */
 package org.spout.vanilla.util;
 
+import sun.font.PhysicalStrike;
+
+import org.spout.api.component.components.PhysicsComponent;
 import org.spout.api.entity.Entity;
 import org.spout.api.geo.LoadOption;
 import org.spout.api.geo.discrete.Point;
@@ -57,7 +60,10 @@ public class ItemUtil {
 		Entity entity = position.getWorld().createEntity(position, Item.class);
 		Item item = entity.add(Item.class);
 		item.setItemStack(itemStack);
-		item.getPhysics().setVelocity(velocity);
+		PhysicsComponent physics = entity.get(PhysicsComponent.class);
+		if (physics != null && velocity != null) {
+			physics.setLinearVelocity(velocity);
+		}
 		if (position.getChunk(LoadOption.NO_LOAD) != null) {
 			position.getWorld().spawnEntity(entity);
 		}

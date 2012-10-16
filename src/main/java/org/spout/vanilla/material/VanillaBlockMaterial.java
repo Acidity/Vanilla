@@ -30,7 +30,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import org.spout.api.collision.CollisionStrategy;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.event.block.BlockChangeEvent;
@@ -78,8 +77,8 @@ public abstract class VanillaBlockMaterial extends BlockMaterial implements Vani
 	public VanillaBlockMaterial(short dataMask, String name, int id) {
 		super(dataMask, name);
 		this.minecraftId = id;
-		this.setCollision(CollisionStrategy.NOCOLLIDE);
 		this.setTransparent();
+		this.setCollisionShape(BlockMaterial.BOX_SHAPE);
 		this.getDrops().SILK_TOUCH.add(this);
 		this.getDrops().DEFAULT.add(this);
 	}
@@ -87,8 +86,8 @@ public abstract class VanillaBlockMaterial extends BlockMaterial implements Vani
 	public VanillaBlockMaterial(String name, int id, int data, VanillaBlockMaterial parent) {
 		super(name, data, parent);
 		this.minecraftId = id;
-		this.setCollision(CollisionStrategy.NOCOLLIDE);
 		this.setTransparent();
+		this.setCollisionShape(BlockMaterial.BOX_SHAPE);
 		this.getDrops().SILK_TOUCH.add(this);
 		this.getDrops().DEFAULT.add(this);
 	}

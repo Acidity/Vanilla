@@ -24,14 +24,12 @@
  * License and see <http://www.spout.org/SpoutDevLicenseV1.txt> for the full license,
  * including the MIT license.
  */
-package org.spout.vanilla.component.misc;
+package org.spout.vanilla.util;
 
-import org.spout.api.component.components.PhysicsComponent;
-import org.spout.api.math.MathHelper;
 import org.spout.api.math.Vector3;
 
 /**
- * Extension of the PhysicsComponent to put bounds on velocity.
+ * Velocity utility class to handle converts to the official client.
  * <p/>
  * Basically, the official protocol handles it like this...
  * - Motion is in block units, each tick at 1/32000
@@ -39,21 +37,12 @@ import org.spout.api.math.Vector3;
  * - Protocol velocity values are simply multiplying blocks by the max block units. This leaves
  * a maximum of 28800 per axis per tick for protocol motion.
  */
-public class VanillaPhysicsComponent extends PhysicsComponent {
-	@Override
-	public void setVelocity(Vector3 velocity) {
-		final double x = MathHelper.clamp(velocity.getX(), -0.9, 0.9);
-		final double y = MathHelper.clamp(velocity.getY(), -0.9, 0.9);
-		final double z = MathHelper.clamp(velocity.getZ(), -0.9, 0.9);
-		super.setVelocity(new Vector3(x, y, z));
-	}
-
+public class VelocityUtil {
 	/**
 	 * Gets the velocity scaled for the official protocol's specifications
 	 * @return
 	 */
-	public Vector3 getProtocolVelocity() {
-		final Vector3 velocity = getVelocity();
+	public static Vector3 convertVelocityToProtocol(Vector3 velocity) {
 		final float x = velocity.getX() * 32000;
 		final float y = velocity.getY() * 32000;
 		final float z = velocity.getZ() * 32000;

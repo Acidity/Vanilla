@@ -30,13 +30,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.spout.api.component.components.PhysicsComponent;
 import org.spout.api.entity.Entity;
 import org.spout.api.geo.discrete.Transform;
 import org.spout.api.protocol.EntityProtocol;
 import org.spout.api.protocol.Message;
 
 import org.spout.vanilla.component.misc.HeadComponent;
-import org.spout.vanilla.component.misc.VanillaPhysicsComponent;
 import org.spout.vanilla.protocol.msg.entity.EntityDestroyMessage;
 import org.spout.vanilla.protocol.msg.entity.pos.EntityHeadYawMessage;
 import org.spout.vanilla.protocol.msg.entity.pos.EntityRelativePositionMessage;
@@ -44,6 +44,7 @@ import org.spout.vanilla.protocol.msg.entity.pos.EntityRelativePositionYawMessag
 import org.spout.vanilla.protocol.msg.entity.pos.EntityTeleportMessage;
 import org.spout.vanilla.protocol.msg.entity.pos.EntityVelocityMessage;
 import org.spout.vanilla.protocol.msg.entity.pos.EntityYawMessage;
+import org.spout.vanilla.util.VelocityUtil;
 
 import static org.spout.vanilla.protocol.ChannelBufferUtils.protocolifyPosition;
 import static org.spout.vanilla.protocol.ChannelBufferUtils.protocolifyRotation;
@@ -95,9 +96,9 @@ public abstract class VanillaEntityProtocol implements EntityProtocol {
 			}
 		}
 
-		VanillaPhysicsComponent physics = entity.add(VanillaPhysicsComponent.class);
+		PhysicsComponent physics = entity.add(PhysicsComponent.class);
 		if (physics.isVelocityDirty()) {
-			messages.add(new EntityVelocityMessage(entity.getId(), physics.getProtocolVelocity()));
+			messages.add(new EntityVelocityMessage(entity.getId(), physics.getLinearVelocity()));
 		}
 		HeadComponent head = entity.add(HeadComponent.class);
 		if (head.isDirty()) {

@@ -33,7 +33,6 @@ import org.spout.api.entity.Player;
 
 import org.spout.vanilla.component.misc.HeadComponent;
 import org.spout.vanilla.component.misc.HealthComponent;
-import org.spout.vanilla.component.misc.VanillaPhysicsComponent;
 import org.spout.vanilla.data.VanillaData;
 
 public abstract class VanillaEntity extends EntityComponent {
@@ -42,7 +41,6 @@ public abstract class VanillaEntity extends EntityComponent {
 		Entity holder = getOwner();
 		holder.add(HeadComponent.class);
 		holder.add(HealthComponent.class);
-		holder.add(VanillaPhysicsComponent.class);
 		holder.setSavable(true);
 
 		//Tracks the number of times this component has been attached (i.e how many times it's been saved, then loaded. 1 = fresh entity)
@@ -63,8 +61,8 @@ public abstract class VanillaEntity extends EntityComponent {
 
 	@Override
 	public void onTick(float dt) {
-		if (getHolder().getTransform().isDirty() && !(getHolder() instanceof Player)) {
-			Spout.log(toString() + " is moving. Transform: " + getHolder().getTransform().getTransform().toString());
+		if (getOwner().getTransform().isDirty() && !(getOwner() instanceof Player)) {
+			Spout.log(toString() + " is moving. Transform: " + getOwner().getTransform().getTransform().toString());
 		}
 	}
 
@@ -74,9 +72,5 @@ public abstract class VanillaEntity extends EntityComponent {
 
 	public HealthComponent getHealth() {
 		return getOwner().add(HealthComponent.class);
-	}
-
-	public VanillaPhysicsComponent getPhysics() {
-		return getOwner().add(VanillaPhysicsComponent.class);
 	}
 }
