@@ -81,7 +81,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Initializes this window to the specified type, title, and offset of first main slot.
-	 *
 	 * @param type of window
 	 * @param title of window
 	 * @param offset of first slot
@@ -100,7 +99,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Initializes this window to the specified type and title.
-	 *
 	 * @param type of window
 	 * @param title of window
 	 * @return this
@@ -151,7 +149,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Called when a client clicks the window while holding shift.
-	 *
 	 * @param stack to manipulate
 	 * @param slot clicked
 	 * @param from inventory slot was in
@@ -182,7 +179,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Called when the client clicks a window.
-	 *
 	 * @param args {@link ClickArguments} of the session
 	 * @return true if click is allowed
 	 */
@@ -306,7 +302,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Called when the client clicks the window while in creative mode.
-	 *
 	 * @param inventory clicked
 	 * @param clickedSlot slot clicked
 	 * @param item item that was put in quickbar
@@ -318,7 +313,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Called when the client clicks outside the bounds of a window
-	 *
 	 * @return true if click is permitted
 	 */
 	public boolean onOutsideClick() {
@@ -338,7 +332,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Gets the combined size of all watched inventories.
-	 *
 	 * @return size of all watching inventories
 	 */
 	public int getInventorySize() {
@@ -351,7 +344,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Returns true if the window is currently opened.
-	 *
 	 * @return true if opened
 	 */
 	public boolean isOpened() {
@@ -361,7 +353,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 	/**
 	 * Returns an inventory entry with the inventory that the native slot
 	 * is mapped to for this window.
-	 *
 	 * @param nativeSlot clicked
 	 * @return inventory that was clicked
 	 */
@@ -379,7 +370,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 	/**
 	 * Returns the click arguments to send to
 	 * {@link #onClick(org.spout.vanilla.inventory.window.ClickArguments)}.
-	 *
 	 * @param nativeSlot slot clicked
 	 * @param rightClick true if client right clicked window
 	 * @param shiftClick true if client was holding down shift
@@ -395,7 +385,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Gets the holder of this window casted to a player.
-	 *
 	 * @return player
 	 */
 	public Player getPlayer() {
@@ -404,7 +393,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Gets the Human component of the holder
-	 *
 	 * @return human
 	 */
 	public Human getHuman() {
@@ -413,7 +401,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Gets an inventory converter from the specified inventory
-	 *
 	 * @param inventory to search for
 	 * @return converter with specified inventory
 	 */
@@ -428,7 +415,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Returns all inventory converters the window is watching
-	 *
 	 * @return all converters
 	 */
 	public Set<InventoryConverter> getInventoryConverters() {
@@ -437,7 +423,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Adds an inventory converter to start watching.
-	 *
 	 * @param converter
 	 */
 	public void addInventoryConverter(InventoryConverter converter) {
@@ -447,7 +432,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Removes an inventory converter to stop watching/
-	 *
 	 * @param converter
 	 */
 	public void removeInventoryConverter(InventoryConverter converter) {
@@ -466,7 +450,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Sets a property of the window on the client.
-	 *
 	 * @param prop of the window
 	 * @param value of the property
 	 */
@@ -477,7 +460,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Returns the property of the window.
-	 *
 	 * @param prop of the window
 	 * @return value of specified property
 	 */
@@ -487,7 +469,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Returns the unique id of this window.
-	 *
 	 * @return id of the window
 	 */
 	public int getId() {
@@ -496,7 +477,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Returns the {@link WindowType} of this window.
-	 *
 	 * @return type of window
 	 */
 	public WindowType getType() {
@@ -506,7 +486,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 	/**
 	 * Sets the type of this window. Changes will not be staged until window is
 	 * re-opened.
-	 *
 	 * @param type to set
 	 */
 	public void setType(WindowType type) {
@@ -515,7 +494,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Returns the title displayed on the window.
-	 *
 	 * @return title displayed on window
 	 */
 	public String getTitle() {
@@ -525,7 +503,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 	/**
 	 * Sets the title displayed on this window. Changes will not be staged
 	 * until window is re-opened.
-	 *
 	 * @param title to display
 	 */
 	public void setTitle(String title) {
@@ -535,7 +512,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 	/**
 	 * Returns true if there is currently an {@link ItemStack} on the client's
 	 * cursor.
-	 *
 	 * @return true if item on cursor
 	 */
 	public boolean hasCursorItem() {
@@ -544,7 +520,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Returns the {@link ItemStack} on the client's cursor.
-	 *
 	 * @return item on cursor
 	 */
 	public ItemStack getCursorItem() {
@@ -556,7 +531,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 	 * does not actually set the item on the client but rather is just for
 	 * internal use only for keeping track of the cursor item server side.
 	 * The server cannot set the cursor item on the client.
-	 *
 	 * @param cursorItem to set
 	 */
 	public void setCursorItem(ItemStack cursorItem) {
@@ -565,7 +539,6 @@ public class Window extends EntityComponent implements InventoryViewer {
 
 	/**
 	 * Attempts to call a {@link ProtocolEvent} for the player.
-	 *
 	 * @param event to call
 	 */
 	protected void callProtocolEvent(ProtocolEvent event) {

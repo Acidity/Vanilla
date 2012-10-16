@@ -40,7 +40,6 @@ public class BlockMaterialLayout {
 	 * <p><pre>setLayout("00000\n00100\n01110\n00100\n00000", Wool.WHITE, Wool.RED);</pre></p>
 	 * <p>This would draw a red cross wrapped in white wool</p> <p>The key index
 	 * begins at 0-9, then a-z</p>
-	 *
 	 * @param layout
 	 */
 	public BlockMaterialLayout(String layout) {
@@ -59,7 +58,6 @@ public class BlockMaterialLayout {
 	/**
 	 * Construct a layout from a 2D character array. Each character can then be
 	 * mapped to a material, and represents a block.
-	 *
 	 * @param layout
 	 */
 	public BlockMaterialLayout(char[][] layout) {
@@ -68,7 +66,6 @@ public class BlockMaterialLayout {
 
 	/**
 	 * Map a character to a block material.
-	 *
 	 * @param key
 	 * @param material
 	 */

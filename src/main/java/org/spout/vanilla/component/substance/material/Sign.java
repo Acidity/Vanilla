@@ -28,6 +28,7 @@ package org.spout.vanilla.component.substance.material;
 
 import org.spout.api.component.components.BlockComponent;
 import org.spout.api.entity.Player;
+
 import org.spout.vanilla.data.VanillaData;
 import org.spout.vanilla.event.block.SignUpdateEvent;
 

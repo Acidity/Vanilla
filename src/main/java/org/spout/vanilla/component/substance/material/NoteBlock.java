@@ -27,6 +27,7 @@
 package org.spout.vanilla.component.substance.material;
 
 import org.spout.api.component.components.BlockComponent;
+
 import org.spout.vanilla.data.VanillaData;
 
 public class NoteBlock extends BlockComponent {

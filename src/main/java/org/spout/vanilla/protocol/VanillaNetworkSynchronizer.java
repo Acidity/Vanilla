@@ -37,7 +37,6 @@ import gnu.trove.set.TIntSet;
 import org.spout.api.Server;
 import org.spout.api.Spout;
 import org.spout.api.entity.Entity;
-import org.spout.api.event.Event;
 import org.spout.api.event.EventHandler;
 import org.spout.api.generator.biome.Biome;
 import org.spout.api.geo.World;
@@ -273,7 +272,7 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 		initChunk(c.getBase());
 
 		Collection<Chunk> chunks = null;
-		
+
 		List<ProtocolEvent> events = new ArrayList<ProtocolEvent>();
 
 		if (activeChunks.add(x, z)) {
@@ -314,7 +313,7 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 			ChunkDataMessage CCMsg = new ChunkDataMessage(x, z, false, new boolean[16], packetChunkData, null, player.getSession());
 			player.getSession().send(false, CCMsg);
 		}
-		
+
 		for (ProtocolEvent e : events) {
 			this.callProtocolEvent(e);
 		}
@@ -645,11 +644,11 @@ public class VanillaNetworkSynchronizer extends NetworkSynchronizer implements P
 
 				arrIndex++;
 			}
-			
+
 			for (BlockComponentSnapshot component : snapshot.getBlockComponents()) {
 				System.out.println("Found block component: " + component.getComponent().getName());
 				if (Sign.class.isAssignableFrom(component.getComponent())) {
-					Sign sign = (Sign)c.getBlockComponent(component.getX(), component.getY(), component.getZ());
+					Sign sign = (Sign) c.getBlockComponent(component.getX(), component.getY(), component.getZ());
 					updateEvents.add(new SignUpdateEvent(sign, sign.getText()));
 					System.out.println("Found sign component: " + Arrays.toString(sign.getText()));
 				}

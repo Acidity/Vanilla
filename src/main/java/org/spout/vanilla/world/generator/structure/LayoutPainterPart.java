@@ -26,12 +26,11 @@
  */
 package org.spout.vanilla.world.generator.structure;
 
-import gnu.trove.map.hash.TCharObjectHashMap;
-
 import org.spout.api.material.BlockMaterial;
 import org.spout.api.math.MathHelper;
 import org.spout.api.math.Quaternion;
 import org.spout.api.math.Vector3;
+
 import org.spout.vanilla.material.VanillaMaterials;
 
 /**

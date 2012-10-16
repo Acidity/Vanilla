@@ -29,11 +29,11 @@ package org.spout.vanilla.data;
 import java.util.Random;
 
 import org.spout.api.inventory.Inventory;
-import org.spout.api.inventory.ItemStack;
 import org.spout.api.map.DefaultedKey;
 import org.spout.api.map.DefaultedKeyArray;
 import org.spout.api.map.DefaultedKeyImpl;
 import org.spout.api.math.Vector3;
+
 import org.spout.vanilla.component.inventory.PlayerInventory;
 
 /**

@@ -38,7 +38,6 @@ import org.spout.vanilla.data.VanillaData;
 import org.spout.vanilla.event.entity.EntityAnimationEvent;
 import org.spout.vanilla.event.entity.EntityDamageEvent;
 import org.spout.vanilla.event.entity.EntityStatusEvent;
-import org.spout.vanilla.protocol.msg.entity.EntityAnimationMessage;
 import org.spout.vanilla.protocol.msg.entity.EntityStatusMessage;
 import org.spout.vanilla.source.DamageCause;
 import org.spout.vanilla.source.HealthChangeCause;

@@ -64,12 +64,12 @@ public class Human extends VanillaEntity {
 		DatatableComponent data = getData();
 		data.put(VanillaData.PLAYER_INVENTORY, new PlayerInventory());
 		//if (data.get(VanillaData.PLAYER_INVENTORY) == null) {
-			//System.out.println("Creating new inventory");
-			//data.put(VanillaData.PLAYER_INVENTORY, new PlayerInventory());
+		//System.out.println("Creating new inventory");
+		//data.put(VanillaData.PLAYER_INVENTORY, new PlayerInventory());
 		//}
 		//Add height offset if loading from disk
 		if (getAttachedCount() > 1 && holder instanceof Player) {
-			((Player)holder).teleport(holder.getTransform().getPosition().add(0, 1.85F, 0));
+			((Player) holder).teleport(holder.getTransform().getPosition().add(0, 1.85F, 0));
 		}
 	}
 

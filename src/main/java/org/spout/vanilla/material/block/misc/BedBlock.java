@@ -44,7 +44,6 @@ import org.spout.vanilla.component.living.VanillaEntity;
 import org.spout.vanilla.component.misc.SleepComponent;
 import org.spout.vanilla.component.world.VanillaSky;
 import org.spout.vanilla.data.Time;
-import org.spout.vanilla.event.player.network.PlayerBedEvent;
 import org.spout.vanilla.material.InitializableMaterial;
 import org.spout.vanilla.material.VanillaBlockMaterial;
 import org.spout.vanilla.material.VanillaMaterials;
